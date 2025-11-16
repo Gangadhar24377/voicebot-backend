@@ -27,9 +27,6 @@ COPY . .
 # Create temp directories
 RUN mkdir -p temp_audio logs
 
-# Make start script executable
-RUN chmod +x start.sh
-
 # Expose port (Railway will set $PORT dynamically)
 EXPOSE 8000
 
@@ -37,5 +34,5 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD python -c "import requests; requests.get('http://localhost:${PORT:-8000}/api/health')"
 
-# Run application using startup script
-CMD ["./start.sh"]
+# Run application - use shell form to allow $PORT variable expansion
+CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
