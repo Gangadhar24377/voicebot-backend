@@ -27,12 +27,12 @@ COPY . .
 # Create temp directories
 RUN mkdir -p temp_audio logs
 
-# Expose port
+# Expose port (Railway will set $PORT dynamically)
 EXPOSE 8000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD python -c "import requests; requests.get('http://localhost:8000/api/health')"
+    CMD python -c "import requests; requests.get('http://localhost:${PORT:-8000}/api/health')"
 
-# Run application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Run application - use shell form to allow $PORT variable expansion
+CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
