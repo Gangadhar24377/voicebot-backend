@@ -1,0 +1,42 @@
+services:
+  - type: web
+    name: voicebot-backend
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: ENVIRONMENT
+        value: production
+      - key: DEBUG
+        value: False
+      - key: LOG_LEVEL
+        value: INFO
+      - key: OPENAI_MODEL
+        value: gpt-4o-mini
+      - key: OPENAI_TTS_MODEL
+        value: tts-1
+      - key: OPENAI_TTS_VOICE
+        value: alloy
+      - key: OPENAI_WHISPER_MODEL
+        value: whisper-1
+      - key: MAX_CONVERSATION_LENGTH
+        value: 20
+      - key: SESSION_TIMEOUT_SECONDS
+        value: 3600
+      - key: MAX_AUDIO_FILE_SIZE_MB
+        value: 25
+      - key: MAX_REQUESTS_PER_MINUTE
+        value: 30
+      - key: MAX_REQUESTS_PER_HOUR
+        value: 500
+      - key: OPENAI_MAX_TOKENS
+        value: 1000
+      - key: OPENAI_TEMPERATURE
+        value: 0.7
+      - key: OPENAI_TIMEOUT_SECONDS
+        value: 30
+    healthCheckPath: /api/health

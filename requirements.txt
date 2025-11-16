@@ -1,0 +1,27 @@
+# Core Framework
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+
+# OpenAI Integration
+openai
+
+# Audio Processing
+python-multipart
+aiofiles
+# Utilities
+python-dotenv
+python-jose[cryptography]
+passlib[bcrypt]
+
+# Logging
+loguru
+
+# Data Validation
+email-validator
+
+# Testing (optional)
+pytest
+pytest-asyncio
+httpx
