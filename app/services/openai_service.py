@@ -122,7 +122,8 @@ class OpenAIService:
     async def text_to_speech(
         self,
         text: str,
-        voice: Optional[str] = None
+        voice: Optional[str] = None,
+        speed: float = 1.25  # Faster speed for quicker response
     ) -> bytes:
         """
         Convert text to speech using OpenAI TTS API.
@@ -130,6 +131,7 @@ class OpenAIService:
         Args:
             text: Text to convert to speech
             voice: Voice to use (alloy, echo, fable, onyx, nova, shimmer)
+            speed: Speech speed (0.25 to 4.0, default 1.25 for faster response)
         
         Returns:
             Audio file bytes (MP3 format)
@@ -143,7 +145,8 @@ class OpenAIService:
             response = await self.client.audio.speech.create(
                 model=self.tts_model,
                 voice=voice or self.tts_voice,
-                input=text
+                input=text,
+                speed=speed
             )
             
             # Get audio content - use .content instead of iter_bytes() for Python 3.13

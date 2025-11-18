@@ -31,7 +31,7 @@ class Settings(BaseSettings):
     cors_origins: str = "http://localhost:3000,http://localhost:5173"
     
     # Conversation Settings
-    max_conversation_length: int = 20
+    max_conversation_length: int = 1000  # Effectively unlimited for interview
     session_timeout_seconds: int = 3600
     max_audio_file_size_mb: int = 25
     

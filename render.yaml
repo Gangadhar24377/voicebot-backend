@@ -24,19 +24,19 @@ services:
       - key: OPENAI_WHISPER_MODEL
         value: whisper-1
       - key: MAX_CONVERSATION_LENGTH
-        value: 20
+        value: 1000
       - key: SESSION_TIMEOUT_SECONDS
         value: 3600
       - key: MAX_AUDIO_FILE_SIZE_MB
         value: 25
       - key: MAX_REQUESTS_PER_MINUTE
-        value: 30
+        value: 60
       - key: MAX_REQUESTS_PER_HOUR
-        value: 500
-      - key: OPENAI_MAX_TOKENS
         value: 1000
+      - key: OPENAI_MAX_TOKENS
+        value: 500
       - key: OPENAI_TEMPERATURE
         value: 0.7
       - key: OPENAI_TIMEOUT_SECONDS
-        value: 30
+        value: 60
     healthCheckPath: /api/health
