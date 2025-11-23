@@ -2,7 +2,8 @@
 Voice endpoints for audio-based conversations.
 Handles audio upload, transcription, and TTS response.
 """
-from fastapi import APIRouter, File, UploadFile, Form, HTTPException, status
+import base64
+from fastapi import APIRouter, File, UploadFile, Form, HTTPException, status, Request
 from fastapi.responses import Response
 from typing import Optional
 from app.models.schemas import VoiceChatResponse, TTSRequest
@@ -17,6 +18,7 @@ router = APIRouter(prefix="/api", tags=["voice"])
 
 @router.post("/voice-chat", response_model=VoiceChatResponse)
 async def voice_chat(
+    request: Request,
     audio: UploadFile = File(...),
     session_id: Optional[str] = Form(None)
 ):
@@ -84,13 +86,20 @@ async def voice_chat(
         
         # Generate speech from response
         app_logger.debug("Generating speech response...")
-        audio_id, _ = await tts_service.generate_speech(response["content"])
+        audio_id, audio_bytes = await tts_service.generate_speech(
+            response["content"],
+            use_cache=False,
+            persist=False
+        )
+        audio_base64 = base64.b64encode(audio_bytes).decode("ascii")
+        audio_data_uri = f"data:audio/mpeg;base64,{audio_base64}"
         
         # Create response
         voice_response = VoiceChatResponse(
             transcription=transcription,
             response=response["content"],
-            audio_url=tts_service.get_audio_url(audio_id),
+            audio_url=None,
+            audio_base64=audio_data_uri,
             session_id=session_id
         )
         

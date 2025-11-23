@@ -40,7 +40,8 @@ class TTSService:
         self,
         text: str,
         voice: Optional[str] = None,
-        use_cache: bool = True
+        use_cache: bool = True,
+        persist: bool = True
     ) -> tuple[str, bytes]:
         """
         Generate speech from text.
@@ -58,8 +59,8 @@ class TTSService:
             audio_id = self._generate_audio_id(text, voice)
             audio_path = self._get_audio_path(audio_id)
             
-            # Check cache
-            if use_cache and audio_path.exists():
+            # Check cache only when persistence is enabled
+            if persist and use_cache and audio_path.exists():
                 app_logger.debug(f"Using cached audio: {audio_id}")
                 with open(audio_path, "rb") as f:
                     audio_bytes = f.read()
@@ -69,9 +70,10 @@ class TTSService:
             app_logger.debug(f"Generating new audio: {audio_id}")
             audio_bytes = await openai_service.text_to_speech(text, voice)
             
-            # Save to cache
-            with open(audio_path, "wb") as f:
-                f.write(audio_bytes)
+            # Save to cache/storage only if requested
+            if persist:
+                with open(audio_path, "wb") as f:
+                    f.write(audio_bytes)
             
             app_logger.info(
                 f"Generated audio {audio_id}: "
@@ -166,7 +168,9 @@ class TTSService:
         Returns:
             Full URL to audio file
         """
-        return f"{base_url}/api/audio/{audio_id}"
+        base_url = (base_url or "").rstrip("/")
+        path = f"/api/audio/{audio_id}"
+        return f"{base_url}{path}" if base_url else path
     
     async def get_storage_stats(self) -> dict:
         """

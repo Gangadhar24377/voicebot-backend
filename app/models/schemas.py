@@ -43,6 +43,7 @@ class VoiceChatResponse(BaseModel):
     transcription: str = Field(..., description="Transcribed user speech")
     response: str = Field(..., description="AI response text")
     audio_url: Optional[str] = Field(None, description="URL to audio response")
+    audio_base64: Optional[str] = Field(None, description="Base64-encoded audio ready for playback")
     session_id: str = Field(..., description="Session ID")
     timestamp: datetime = Field(default_factory=datetime.utcnow, description="Response timestamp")
     
@@ -51,7 +52,8 @@ class VoiceChatResponse(BaseModel):
             "example": {
                 "transcription": "What is your number one superpower?",
                 "response": "My #1 superpower is taking ideas from concept to working product rapidly...",
-                "audio_url": "/api/audio/temp-file-id.mp3",
+                "audio_url": None,
+                "audio_base64": "data:audio/mpeg;base64,//uQxAAAAAAAA...",
                 "session_id": "550e8400-e29b-41d4-a716-446655440000",
                 "timestamp": "2024-11-17T10:30:00Z"
             }
